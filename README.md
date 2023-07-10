@@ -34,7 +34,7 @@ $events = $client->fetch();
 If everything worked, `$events` will be an array of `Passchn\Konzertmeister\Event\Event`.
 
 ```php
-$event = current($event);
+$event = current($events);
 $eventName = $event->name;
 $dateFrom = $event->start->format('d.m.Y');
 
