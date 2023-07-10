@@ -1,7 +1,7 @@
 {
   "name": "passchn/konzertmeister",
   "description": "Konzertmeister Integration for PHP",
-  "type": "composer-plugin",
+  "type": "library",
   "license": "MIT",
   "authors": [
     {
