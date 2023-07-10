@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class ClientTest extends TestCase
 {
-    protected bool $areNetworkTestsEnabled = true;
+    protected bool $areNetworkTestsEnabled = false;
 
     /**
      * Url can be modified and /json path is added
@@ -33,21 +33,14 @@ class ClientTest extends TestCase
     public function testClient()
     {
         if (!$this->areNetworkTestsEnabled) {
-            return;
+            $this->markTestSkipped('Http testing not active.');
         }
 
         $options = $this->getOptions();
-
         $client = new Client($options);
+        $events = $client->fetch();
 
-        $response = $client->fetch();
-
-        Assert::assertEquals(200, $response->getStatusCode());
-
-        $contents = $response->getBody()->getContents();
-        $contents = json_decode($contents);
-
-        Assert::assertIsArray($contents);
+        Assert::assertIsArray($events);
     }
 
     protected function getOptions(): ClientOptions

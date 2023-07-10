@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace Passchn\Konzertmeister\Network;
 
-use Psr\Http\Message\ResponseInterface;
+use GuzzleHttp\Exception\GuzzleException;
+use Passchn\Konzertmeister\Event\Builder\JsonToEventList;
+use Passchn\Konzertmeister\Event\Event;
 
 class Client
 {
@@ -13,8 +15,14 @@ class Client
     {
     }
 
-    public function fetch(): ResponseInterface
+    /**
+     * @return list<Event>
+     * @throws GuzzleException
+     */
+    public function fetch(): array
     {
-        return $this->options->getClient()->get($this->options->getUrl());
+        $response = $this->options->getClient()->get($this->options->getUrl());
+
+        return JsonToEventList::convert($response->getBody()->getContents());
     }
 }

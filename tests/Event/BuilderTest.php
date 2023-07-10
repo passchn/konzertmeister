@@ -11,7 +11,19 @@ class BuilderTest extends TestCase
 {
     public function testBuilder()
     {
-        $data = file_get_contents('./files/test-response.json');
+        $cwd = getcwd();
+        $part = '/tests/Event';
+        if (!str_contains($cwd, $part)) {
+            $cwd .= $part;
+        }
+        $path = $cwd . '/files/test-response.json';
+        $data = file_get_contents($path);
+        if ($data === false) {
+            throw new \Exception(sprintf(
+                'test data not found at "%s".',
+                $path,
+            ));
+        }
 
         $events = JsonToEventList::convert($data);
 
