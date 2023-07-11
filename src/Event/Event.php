@@ -12,8 +12,8 @@ class Event
         public readonly \DateTimeImmutable $end,
         public readonly EventType          $type,
         public readonly bool               $isActive,
-        public readonly Location           $location,
-        public readonly Organization       $organization,
+        public readonly ?Location          $location,
+        public readonly ?Organization      $organization,
         public readonly array              $tags,
     )
     {

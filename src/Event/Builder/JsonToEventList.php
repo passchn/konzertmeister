@@ -26,21 +26,27 @@ class JsonToEventList
 
         foreach ($dataList as $data) {
 
-            $location = new Location(
-                $data['location']['id'],
-                $data['location']['name'],
-                $data['location']['geo'],
-                $data['location']['formattedAddress'],
-                $data['location']['latitude'],
-                $data['location']['longitude'],
-            );
+            $location = null;
+            if ($data['location'] !== null) {
+                $location = new Location(
+                    $data['location']['id'],
+                    $data['location']['name'],
+                    $data['location']['geo'],
+                    $data['location']['formattedAddress'],
+                    $data['location']['latitude'],
+                    $data['location']['longitude'],
+                );
+            }
 
-            $organization = new Organization(
-                $data['org']['id'],
-                $data['org']['name'],
-                $data['org']['parentName'],
-                $data['org']['imageUrl'],
-            );
+            $organization = null;
+            if ($data['org'] !== null) {
+                $organization = new Organization(
+                    $data['org']['id'],
+                    $data['org']['name'],
+                    $data['org']['parentName'],
+                    $data['org']['imageUrl'],
+                );
+            }
 
             $tags = array_map(
                 static function (array $tagData) {
@@ -50,7 +56,7 @@ class JsonToEventList
                         $tagData['color'],
                     );
                 },
-                $data['tags']
+                $data['tags'] ?? []
             );
 
             $events[] = new Event(
@@ -65,7 +71,7 @@ class JsonToEventList
                 $tags,
             );
         }
-        
+
         return $events;
     }
 }
