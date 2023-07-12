@@ -47,7 +47,7 @@ class ClientTest extends TestCase
     {
         return new ClientOptions(
             new \GuzzleHttp\Client(),
-            'https://rest.konzertmeister.app/api/v3/org/OALS_79fsdfd/upcomingappointments?limit=10&display=light&hash=232133&types=1,2&tags=123,456'
+            'https://rest.konzertmeister.app/api/v3/org/OALS_79fsdfd/upcomingappointments?limit=10&display=light&hash=232133&types=1,2&tags=123,456',
         );
     }
 }

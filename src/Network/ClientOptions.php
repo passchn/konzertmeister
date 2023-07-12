@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Passchn\Konzertmeister\Network;
 
+use DateTimeZone;
+use GuzzleHttp\Client as GuzzleClient;
 use Nette\Http\Url;
 
 class ClientOptions
@@ -10,14 +12,15 @@ class ClientOptions
     protected Url $url;
 
     public function __construct(
-        protected readonly \GuzzleHttp\Client $client,
-        string                                $url,
+        protected readonly GuzzleClient  $client,
+        string                           $url,
+        protected readonly ?DateTimeZone $timeZone = null,
     )
     {
         $this->url = new Url($url);
     }
 
-    public function getClient(): \GuzzleHttp\Client
+    public function getClient(): GuzzleClient
     {
         return $this->client;
     }
@@ -34,5 +37,10 @@ class ClientOptions
         $this->url->setPath($path);
 
         return $this->url->getAbsoluteUrl();
+    }
+
+    public function getTimeZone(): ?DateTimeZone
+    {
+        return $this->timeZone;
     }
 }

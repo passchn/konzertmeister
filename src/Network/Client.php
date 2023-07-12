@@ -23,6 +23,9 @@ class Client
     {
         $response = $this->options->getClient()->get($this->options->getUrl());
 
-        return JsonToEventList::convert($response->getBody()->getContents());
+        return JsonToEventList::convert(
+            $response->getBody()->getContents(),
+            $this->options->getTimeZone(),
+        );
     }
 }

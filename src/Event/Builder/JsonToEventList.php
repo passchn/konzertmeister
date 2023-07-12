@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Passchn\Konzertmeister\Event\Builder;
 
+use DateTimeZone;
 use Exception;
 use Passchn\Konzertmeister\Event\Event;
 use Passchn\Konzertmeister\Event\EventType;
@@ -14,13 +15,18 @@ class JsonToEventList
 {
     /**
      * @param string $json
+     * @param DateTimeZone|null $timeZone
      * @return list<Event>
      * @throws Exception
      */
-    public static function convert(string $json): array
+    public static function convert(string $json, ?DateTimeZone $timeZone = null): array
     {
         $dataList = json_decode($json, true);
         unset($json);
+
+        if (!is_array($dataList)) {
+            return [];
+        }
 
         $events = [];
 
@@ -59,11 +65,19 @@ class JsonToEventList
                 $data['tags'] ?? []
             );
 
+            $start = new \DateTimeImmutable($data['start']);
+            $end = new \DateTimeImmutable($data['end']);
+
+            if ($timeZone !== null) {
+                $start = $start->setTimezone($timeZone);
+                $end = $end->setTimezone($timeZone);
+            }
+
             $events[] = new Event(
                 $data['id'],
                 $data['name'],
-                new \DateTimeImmutable($data['start']),
-                new \DateTimeImmutable($data['end']),
+                $start,
+                $end,
                 EventType::fromId($data['typId']),
                 $data['active'],
                 $location,
