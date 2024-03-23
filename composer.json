@@ -12,7 +12,10 @@
   "require": {
     "php": "^8.1",
     "guzzlehttp/guzzle": "^7.0",
-    "nette/http": "^3.0"
+    "nette/http": "^3.0",
+    "dompdf/dompdf": "^2.0",
+    "league/plates": "^3.5",
+    "nette/utils": "^4.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^10"
