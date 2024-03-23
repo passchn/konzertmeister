@@ -11,15 +11,4 @@ enum EventType: int
     case RehearsalInPreparation = 4;
     case GigInPreparation = 5;
     case Information = 6;
-
-    public static function fromId(int $id): EventType
-    {
-        foreach (EventType::cases() as $case) {
-            if ($case->value === $id) {
-                return $case;
-            }
-        }
-
-        throw new \Exception('EventType not found.');
-    }
 }

@@ -78,7 +78,7 @@ class JsonToEventList
                 $data['name'],
                 $start,
                 $end,
-                EventType::fromId($data['typId']),
+                EventType::from($data['typId']),
                 $data['active'],
                 $location,
                 $organization,
