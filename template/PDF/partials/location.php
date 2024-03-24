@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 /**
  * @var \League\Plates\Template\Template $this
- * @var \Passchn\Konzertmeister\Event\Location $location
+ * @var \Passchn\Konzertmeister\Event\Event $event
+ * @var \Passchn\Konzertmeister\Export\FormatterInterface $_formatter
  */
 
-$hasNameAndAddress = $location->name && $location->formattedAddress;
+$hasNameAndAddress = $event->location->name && $event->location->formattedAddress;
 
 ?>
 <?php if ($hasNameAndAddress) : ?>
-    <?= $location->name ?> <br>
+    <?= $event->location->name ?> <br>
     <small class="muted">
-        <?= $location->formattedAddress ?>
+        <?= $_formatter->formattedAddress($event) ?>
     </small>
 <?php else : ?>
-    <?= $location->name ?>
-    <?= $location->formattedAddress ?>
+    <?= $event->location->name ?>
+    <?= $_formatter->formattedAddress($event) ?>
 <?php endif; ?>

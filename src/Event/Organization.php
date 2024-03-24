@@ -10,7 +10,6 @@ class Organization
         public readonly string  $name,
         public readonly ?string $parentName,
         public readonly ?string $imageUrl,
-    )
-    {
+    ) {
     }
 }

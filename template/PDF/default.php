@@ -5,6 +5,7 @@ declare(strict_types=1);
 /**
  * @var list<\Passchn\Konzertmeister\Event\Event> $events
  * @var League\Plates\Template\Template $this
+ * @var \Passchn\Konzertmeister\Export\FormatterInterface $_formatter
  */
 
 use Passchn\Konzertmeister\Event\Tag;
@@ -161,7 +162,8 @@ $title = sprintf(
                 </td>
                 <td>
                     <?= $this->insert('partials/location', [
-                        'location' => $event->location,
+                        'event' => $event,
+                        '_formatter' => $_formatter,
                     ]) ?>
                 </td>
                 <td>

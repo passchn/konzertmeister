@@ -12,7 +12,6 @@ class Location
         public readonly ?string $formattedAddress,
         public readonly ?float  $latitude,
         public readonly ?float  $longitude,
-    )
-    {
+    ) {
     }
 }
