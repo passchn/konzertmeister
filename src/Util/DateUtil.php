@@ -106,7 +106,7 @@ class DateUtil
         ];
 
         $langMap = $map[$locale] ?? $map[Strings::before($locale, '-') ?? 'de'];
-        $day = $dateTime->format('N');
+        $day = $dateTime->format('n');
 
         return $langMap[$day][$short ? 0 : 1];
     }
