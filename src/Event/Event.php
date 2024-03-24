@@ -8,7 +8,7 @@ class Event
     public function __construct(
         public readonly int                $id,
         public readonly string             $name,
-        public readonly ?string             $description,
+        public readonly ?string            $description,
         public readonly \DateTimeImmutable $start,
         public readonly \DateTimeImmutable $end,
         public readonly EventType          $type,
@@ -17,5 +17,10 @@ class Event
         public readonly ?Organization      $organization,
         public readonly array              $tags,
     ) {
+    }
+
+    public function isMultipleDays(): bool
+    {
+        return $this->start->format('dmY') !== $this->end->format('dmY');
     }
 }
