@@ -76,6 +76,7 @@ class JsonToEventList
             $events[] = new Event(
                 $data['id'],
                 $data['name'],
+                $data['description'],
                 $start,
                 $end,
                 EventType::from($data['typId']),

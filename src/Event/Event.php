@@ -8,6 +8,7 @@ class Event
     public function __construct(
         public readonly int                $id,
         public readonly string             $name,
+        public readonly ?string             $description,
         public readonly \DateTimeImmutable $start,
         public readonly \DateTimeImmutable $end,
         public readonly EventType          $type,
@@ -15,7 +16,6 @@ class Event
         public readonly ?Location          $location,
         public readonly ?Organization      $organization,
         public readonly array              $tags,
-    )
-    {
+    ) {
     }
 }
