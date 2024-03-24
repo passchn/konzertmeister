@@ -52,7 +52,7 @@ $title = sprintf(
         }
 
         .muted {
-            color: slategray;
+            color: darkslategray;
         }
 
         .current-month {
@@ -69,22 +69,26 @@ $title = sprintf(
         .current-month td {
             padding: .45rem .25rem;
         }
+
         .tags {
             display: flex;
             flex-wrap: wrap;
             max-width: 12rem;
             margin-top: .35rem;;
         }
+
         .tag {
             display: inline-block;
             padding: .2rem .45rem;
             font-size: .65rem;
             border-radius: .45rem;
         }
+
         .tag.--event-type {
             background-color: darkslategray;
             color: #fff;
         }
+
         .creation-time {
             float: right;
         }
@@ -100,10 +104,7 @@ $title = sprintf(
         <thead>
         <tr>
             <th>
-                Datum
-            </th>
-            <th>
-                Uhrzeit
+                Datum / Uhrzeit
             </th>
             <th>
                 Termin
@@ -141,13 +142,14 @@ $title = sprintf(
                             $event->start->format('d.m.'),
                         )
                     ?>
-                </td>
-                <td>
-                    <?= sprintf(
-                        '%s&nbsp;–&nbsp;%s',
-                        $event->start->format('H:i'),
-                        $event->end->format('H:i')
-                    ) ?>
+                    <br>
+                    <small class="muted">
+                        <?= sprintf(
+                            '%s&nbsp;–&nbsp;%s',
+                            $event->start->format('H:i'),
+                            $event->end->format('H:i')
+                        ) ?>
+                    </small>
                 </td>
                 <td>
                     <?= $event->name ?>
