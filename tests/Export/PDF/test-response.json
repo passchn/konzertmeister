@@ -60,7 +60,7 @@
     "forceDescriptionOnNegativeReply": null,
     "location": {
       "id": 3423429,
-      "name": null,
+      "name": "Random Location",
       "geo": true,
       "formattedAddress": "Some Street 1312",
       "latitude": 50.12,

@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 /**
  * @var list<\Passchn\Konzertmeister\Event\Event> $events
+ * @var League\Plates\Template\Template $this
  */
 
 use Passchn\Konzertmeister\Event\Tag;
+use Passchn\Konzertmeister\Util\DateUtil;
 
 $startYear = ($events[0] ?? null)?->start->format('Y');
 $endYear = ($events[0] ?? null)?->end->format('Y');
@@ -38,18 +40,61 @@ $title = sprintf(
             width: 100%;
         }
 
+        table th {
+            font-size: .75rem;
+            text-align: left;
+            color: darkslategray;
+        }
+
         table td, table th {
-            border-bottom: 1px solid slategray;
-            padding: .5rem;
+            border-bottom: 1px solid darkslategray;
+            padding: .35rem .25rem;
         }
 
         .muted {
             color: slategray;
         }
+
+        .current-month {
+            text-align: center;
+            background-color: #f7f7f7;
+        }
+
+        .current-month h2 {
+            font-size: .85rem;
+            color: darkslategray;
+            margin: .25rem 0 0 0;
+        }
+
+        .current-month td {
+            padding: .45rem .25rem;
+        }
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            max-width: 12rem;
+            margin-top: .35rem;;
+        }
+        .tag {
+            display: inline-block;
+            padding: .2rem .45rem;
+            font-size: .65rem;
+            border-radius: .45rem;
+        }
+        .tag.--event-type {
+            background-color: darkslategray;
+            color: #fff;
+        }
+        .creation-time {
+            float: right;
+        }
     </style>
 </head>
 <body>
 <main>
+    <small class="creation-time muted">
+        Stand: <?= (new DateTimeImmutable())->format('d.m.Y') ?>
+    </small>
     <h1><?= $title ?></h1>
     <table>
         <thead>
@@ -67,17 +112,18 @@ $title = sprintf(
                 Ort
             </th>
             <th>
-                Tags
+                Info
             </th>
         </tr>
         </thead>
         <tbody>
         <?php foreach ($events as $event) : ?>
             <?php if ($currentMonth !== $event->start->format('m')) : ?>
-                <tr>
+                <tr class="current-month">
                     <td colspan="5">
                         <h2>
-                            <?= $event->start->format('F Y') ?>
+                            <?= DateUtil::getTranslatedMonth($event->start, short: false) ?>
+                            <?= $event->start->format('Y') ?>
                         </h2>
                     </td>
                 </tr>
@@ -89,12 +135,19 @@ $title = sprintf(
                 <td>
                     <?= $event->isMultipleDays() ?
                         sprintf('%s bis %s', $event->start->format('d.m'), $event->end->format('d.m'))
-                        : $event->start->format('d.m.')
+                        : sprintf(
+                            '%s,&nbsp;%s',
+                            DateUtil::getTranslatedWeekday($event->start),
+                            $event->start->format('d.m.'),
+                        )
                     ?>
                 </td>
                 <td>
-                    <?= $event->start->format('H:i') ?> -
-                    <?= $event->end->format('H:i') ?>
+                    <?= sprintf(
+                        '%s&nbsp;–&nbsp;%s',
+                        $event->start->format('H:i'),
+                        $event->end->format('H:i')
+                    ) ?>
                 </td>
                 <td>
                     <?= $event->name ?>
@@ -106,23 +159,20 @@ $title = sprintf(
                     <?php endif; ?>
                 </td>
                 <td>
-                    <?php if ($event->location->name) : ?>
-                        <?= $event->location->name ?>
-                    <?php endif; ?>
-                    <?php if ($event->location->name && $event->location->formattedAddress) : ?>
-                        <br>
-                    <?php endif; ?>
-                    <?php if ($event->location->formattedAddress) : ?>
-                        <?= $event->location->formattedAddress ?>
-                    <?php endif; ?>
+                    <?= $this->insert('partials/location', [
+                        'location' => $event->location,
+                    ]) ?>
                 </td>
                 <td>
-                    <?php
-                    /** @var Tag $tag */
-                    foreach ($event->tags as $tag):
-                        ?>
-                        <span class="tag" style="color:<?= $tag->color ?>;"><?= $tag->tag ?></span>
-                    <?php endforeach; ?>
+                    <div class="tags">
+                        <span class="tag --event-type"><?= $event->type->getLocalName() ?></span>
+                        <?php
+                        /** @var Tag $tag */
+                        foreach ($event->tags as $tag):
+                            ?>
+                            <span class="tag" style="background-color:<?= $tag->color ?>;"><?= $tag->tag ?></span>
+                        <?php endforeach; ?>
+                    </div>
                 </td>
             </tr>
         <?php endforeach; ?>
