@@ -78,7 +78,6 @@ $title = sprintf(
         }
 
         .tag {
-            display: inline-block;
             padding: .2rem .45rem;
             font-size: .65rem;
             border-radius: .45rem;
