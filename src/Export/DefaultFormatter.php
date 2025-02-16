@@ -10,6 +10,6 @@ class DefaultFormatter implements FormatterInterface
 {
     public function formattedAddress(Event $event): ?string
     {
-        return $event->location->formattedAddress;
+        return $event->location?->formattedAddress;
     }
 }

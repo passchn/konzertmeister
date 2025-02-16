@@ -8,7 +8,8 @@ declare(strict_types=1);
  * @var \Passchn\Konzertmeister\Export\FormatterInterface $_formatter
  */
 
-$hasNameAndAddress = $event->location->name && $event->location->formattedAddress;
+$hasNameAndAddress = trim((string)$event->location?->name) !== ''
+    && trim((string)$event->location?->formattedAddress) !== '';
 
 ?>
 <?php if ($hasNameAndAddress) : ?>
@@ -17,6 +18,6 @@ $hasNameAndAddress = $event->location->name && $event->location->formattedAddres
         <?= $_formatter->formattedAddress($event) ?>
     </small>
 <?php else : ?>
-    <?= $event->location->name ?>
+    <?= $event->location?->name ?>
     <?= $_formatter->formattedAddress($event) ?>
 <?php endif; ?>
