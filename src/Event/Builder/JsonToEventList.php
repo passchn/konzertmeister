@@ -31,7 +31,14 @@ class JsonToEventList
 
         foreach ($dataList as $data) {
             try {
-                $events[] = self::convertEventData($data);
+                if (!is_array($data)) {
+                    throw new \RuntimeException('Invalid event data format, expected array.');
+                }
+                if (array_key_exists('name', $data)) {
+                    $events[] = self::convertEventData($data);
+                    continue;
+                }
+                throw new \RuntimeException('Invalid event data format, expected "name" key.');
             } catch (\Throwable $throwable) {
                 if ($onConvertError !== null) {
                     $onConvertError($throwable, $data);
