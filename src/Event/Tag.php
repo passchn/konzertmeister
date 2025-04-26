@@ -9,7 +9,6 @@ class Tag
         public readonly int $id,
         public readonly string $tag,
         public readonly string $color,
-    )
-    {
+    ) {
     }
 }

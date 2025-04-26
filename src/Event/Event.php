@@ -7,6 +7,9 @@ use DateTimeImmutable;
 
 class Event
 {
+    /**
+     * @param Tag[] $tags
+     */
     public function __construct(
         public readonly int                $id,
         public readonly string             $name,
@@ -24,5 +27,16 @@ class Event
     public function isMultipleDays(): bool
     {
         return $this->start->format('dmY') !== $this->end->format('dmY');
+    }
+
+    public function hasTag(string $name): bool
+    {
+        foreach ($this->tags as $tag) {
+            if ($tag->tag === $name) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
