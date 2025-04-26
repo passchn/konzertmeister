@@ -11,16 +11,17 @@ class Event
      * @param Tag[] $tags
      */
     public function __construct(
-        public readonly int                $id,
-        public readonly string             $name,
-        public readonly ?string            $description,
+        public readonly int               $id,
+        public readonly string            $name,
+        public readonly ?string           $description,
         public readonly DateTimeImmutable $start,
         public readonly DateTimeImmutable $end,
-        public readonly EventType          $type,
-        public readonly bool               $isActive,
-        public readonly ?Location          $location,
-        public readonly ?Organization      $organization,
-        public readonly array              $tags,
+        public readonly EventType         $type,
+        public readonly bool              $isActive,
+        public readonly ?Location         $location,
+        public readonly ?Organization     $organization,
+        public readonly array             $tags,
+        public readonly string            $externalAppointmentLink,
     ) {
     }
 

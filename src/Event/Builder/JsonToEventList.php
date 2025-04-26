@@ -68,15 +68,14 @@ class JsonToEventList
             $start = new \DateTimeImmutable($data['start']);
             $end = new \DateTimeImmutable($data['end']);
 
-            if ($timeZone !== null) {
-                $start = $start->setTimezone($timeZone);
-                $end = $end->setTimezone($timeZone);
-            }
+            $timeZone ??= new DateTimeZone($data['timezoneId'] ?? 'UTC');
+            $start = $start->setTimezone($timeZone);
+            $end = $end->setTimezone($timeZone);
 
             $events[] = new Event(
                 $data['id'],
                 $data['name'],
-                $data['description'],
+                self::nonEmptyStringOrNull($data['description'] ?? null),
                 $start,
                 $end,
                 EventType::from($data['typId']),
@@ -84,9 +83,15 @@ class JsonToEventList
                 $location,
                 $organization,
                 $tags,
+                self::nonEmptyStringOrNull($data['externalAppointmentLink'] ?? null),
             );
         }
 
         return $events;
+    }
+
+    private static function nonEmptyStringOrNull(?string $value): ?string
+    {
+        return $value === '' ? null : $value;
     }
 }
