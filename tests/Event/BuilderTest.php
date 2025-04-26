@@ -22,28 +22,9 @@ class BuilderTest extends TestCase
         Assert::assertEquals(645353, $testEvent->id);
     }
 
-    public function testTimeZones()
+    private function getEvents(): array
     {
-        $timezones = [
-            'Z' => '18:30',
-            'GMT' => '18:30',
-            'GMT+2' => '20:30',
-            '-4:00' => '14:30',
-        ];
-
-        foreach ($timezones as $tz => $expectedTime) {
-            $event = current($this->getEvents($tz));
-            Assert::assertEquals($expectedTime, $event->start->format('H:i'));
-        }
-    }
-
-    private function getEvents(?string $timezone = null): array
-    {
-        if ($timezone !== null) {
-            $timezone = new \DateTimeZone($timezone);
-        }
-
-        return JsonToEventList::convert($this->getTestJson(), $timezone);
+        return JsonToEventList::convert($this->getTestJson());
     }
 
     private function getTestJson(): string

@@ -5,7 +5,6 @@ namespace Passchn\Konzertmeister\Event\Builder;
 
 use Closure;
 use DateTimeZone;
-use Exception;
 use Passchn\Konzertmeister\Event\Event;
 use Passchn\Konzertmeister\Event\EventType;
 use Passchn\Konzertmeister\Event\Location;
@@ -16,11 +15,10 @@ class JsonToEventList
 {
     /**
      * @param string $json
-     * @param DateTimeZone|null $timeZone
      * @param Closure|null $onConvertError receives the exception and the data that caused the error
      * @return Event[]
      */
-    public static function convert(string $json, ?DateTimeZone $timeZone = null, ?Closure $onConvertError = null): array
+    public static function convert(string $json, ?Closure $onConvertError = null): array
     {
         $dataList = json_decode($json, true, flags: JSON_THROW_ON_ERROR);
         unset($json);
@@ -33,10 +31,10 @@ class JsonToEventList
 
         foreach ($dataList as $data) {
             try {
-                $events[] = self::convertEventData($data, $timeZone);
-            } catch (Exception $e) {
+                $events[] = self::convertEventData($data);
+            } catch (\Throwable $throwable) {
                 if ($onConvertError !== null) {
-                    $onConvertError($e, $data);
+                    $onConvertError($throwable, $data);
                 }
                 continue;
             }
@@ -45,7 +43,7 @@ class JsonToEventList
         return $events;
     }
 
-    private static function convertEventData(array $data, ?DateTimeZone $timeZone = null): Event
+    private static function convertEventData(array $data): Event
     {
         $location = null;
         if ($data['location'] !== null) {
@@ -83,7 +81,7 @@ class JsonToEventList
         $start = new \DateTimeImmutable($data['start']);
         $end = new \DateTimeImmutable($data['end']);
 
-        $timeZone ??= new DateTimeZone($data['timezoneId'] ?? 'UTC');
+        $timeZone = new DateTimeZone($data['timezoneId'] ?? 'Europe/Berlin');
         $start = $start->setTimezone($timeZone);
         $end = $end->setTimezone($timeZone);
 
