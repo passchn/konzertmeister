@@ -21,7 +21,7 @@ class Event
         public readonly ?Location         $location,
         public readonly ?Organization     $organization,
         public readonly array             $tags,
-        public readonly string            $externalAppointmentLink,
+        public readonly ?string           $externalAppointmentLink,
     ) {
     }
 

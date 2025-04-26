@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Passchn\Konzertmeister\Event\Builder;
 
+use Closure;
 use DateTimeZone;
 use Exception;
 use Passchn\Konzertmeister\Event\Event;
@@ -16,12 +17,12 @@ class JsonToEventList
     /**
      * @param string $json
      * @param DateTimeZone|null $timeZone
-     * @return list<Event>
-     * @throws Exception
+     * @param Closure|null $onConvertError receives the exception and the data that caused the error
+     * @return Event[]
      */
-    public static function convert(string $json, ?DateTimeZone $timeZone = null): array
+    public static function convert(string $json, ?DateTimeZone $timeZone = null, ?Closure $onConvertError = null): array
     {
-        $dataList = json_decode($json, true);
+        $dataList = json_decode($json, true, flags: JSON_THROW_ON_ERROR);
         unset($json);
 
         if (!is_array($dataList)) {
@@ -31,63 +32,74 @@ class JsonToEventList
         $events = [];
 
         foreach ($dataList as $data) {
-
-            $location = null;
-            if ($data['location'] !== null) {
-                $location = new Location(
-                    $data['location']['id'],
-                    $data['location']['name'],
-                    $data['location']['geo'],
-                    $data['location']['formattedAddress'],
-                    $data['location']['latitude'],
-                    $data['location']['longitude'],
-                );
+            try {
+                $events[] = self::convertEventData($data, $timeZone);
+            } catch (Exception $e) {
+                if ($onConvertError !== null) {
+                    $onConvertError($e, $data);
+                }
+                continue;
             }
-
-            $organization = null;
-            if ($data['org'] !== null) {
-                $organization = new Organization(
-                    $data['org']['id'],
-                    $data['org']['name'],
-                    $data['org']['parentName'],
-                    $data['org']['imageUrl'],
-                );
-            }
-
-            $tags = array_map(
-                static function (array $tagData) {
-                    return new Tag(
-                        $tagData['id'],
-                        $tagData['tag'],
-                        $tagData['color'],
-                    );
-                },
-                $data['tags'] ?? []
-            );
-
-            $start = new \DateTimeImmutable($data['start']);
-            $end = new \DateTimeImmutable($data['end']);
-
-            $timeZone ??= new DateTimeZone($data['timezoneId'] ?? 'UTC');
-            $start = $start->setTimezone($timeZone);
-            $end = $end->setTimezone($timeZone);
-
-            $events[] = new Event(
-                $data['id'],
-                $data['name'],
-                self::nonEmptyStringOrNull($data['description'] ?? null),
-                $start,
-                $end,
-                EventType::from($data['typId']),
-                $data['active'],
-                $location,
-                $organization,
-                $tags,
-                self::nonEmptyStringOrNull($data['externalAppointmentLink'] ?? null),
-            );
         }
 
         return $events;
+    }
+
+    private static function convertEventData(array $data, ?DateTimeZone $timeZone = null): Event
+    {
+        $location = null;
+        if ($data['location'] !== null) {
+            $location = new Location(
+                $data['location']['id'],
+                $data['location']['name'],
+                $data['location']['geo'],
+                $data['location']['formattedAddress'],
+                $data['location']['latitude'],
+                $data['location']['longitude'],
+            );
+        }
+
+        $organization = null;
+        if ($data['org'] !== null) {
+            $organization = new Organization(
+                $data['org']['id'],
+                $data['org']['name'],
+                $data['org']['parentName'],
+                $data['org']['imageUrl'],
+            );
+        }
+
+        $tags = array_map(
+            static function (array $tagData) {
+                return new Tag(
+                    $tagData['id'],
+                    $tagData['tag'],
+                    $tagData['color'],
+                );
+            },
+            $data['tags'] ?? []
+        );
+
+        $start = new \DateTimeImmutable($data['start']);
+        $end = new \DateTimeImmutable($data['end']);
+
+        $timeZone ??= new DateTimeZone($data['timezoneId'] ?? 'UTC');
+        $start = $start->setTimezone($timeZone);
+        $end = $end->setTimezone($timeZone);
+
+        return new Event(
+            $data['id'],
+            $data['name'],
+            self::nonEmptyStringOrNull($data['description'] ?? null),
+            $start,
+            $end,
+            EventType::from($data['typId']),
+            $data['active'],
+            $location,
+            $organization,
+            $tags,
+            self::nonEmptyStringOrNull($data['externalAppointmentLink'] ?? null),
+        );
     }
 
     private static function nonEmptyStringOrNull(?string $value): ?string
