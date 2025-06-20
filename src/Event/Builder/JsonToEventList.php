@@ -56,11 +56,11 @@ class JsonToEventList
         if ($data['location'] !== null) {
             $location = new Location(
                 $data['location']['id'],
-                $data['location']['name'],
-                $data['location']['geo'],
-                $data['location']['formattedAddress'],
-                $data['location']['latitude'],
-                $data['location']['longitude'],
+                $data['location']['name'] ?? null,
+                $data['location']['geo'] ?? false,
+                $data['location']['formattedAddress'] ?? null,
+                $data['location']['latitude'] ?? null,
+                $data['location']['longitude'] ?? null,
             );
         }
 
@@ -69,8 +69,8 @@ class JsonToEventList
             $organization = new Organization(
                 $data['org']['id'],
                 $data['org']['name'],
-                $data['org']['parentName'],
-                $data['org']['imageUrl'],
+                $data['org']['parentName'] ?? null,
+                $data['org']['imageUrl'] ?? null,
             );
         }
 
