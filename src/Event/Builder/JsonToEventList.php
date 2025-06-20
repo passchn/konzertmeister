@@ -53,7 +53,7 @@ class JsonToEventList
     private static function convertEventData(array $data): Event
     {
         $location = null;
-        if ($data['location'] !== null) {
+        if (($data['location'] ?? null) !== null) {
             $location = new Location(
                 $data['location']['id'],
                 $data['location']['name'] ?? null,
@@ -65,7 +65,7 @@ class JsonToEventList
         }
 
         $organization = null;
-        if ($data['org'] !== null) {
+        if (($data['org'] ?? null) !== null) {
             $organization = new Organization(
                 $data['org']['id'],
                 $data['org']['name'],
